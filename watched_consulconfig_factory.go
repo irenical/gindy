@@ -17,7 +17,8 @@ type WatchedConsulConfigFactory struct {
 	address string
 }
 
-func (ccf WatchedConsulConfigFactory) create() *ConsulConfig {
+// Create creates a new instance of ConsulConfig
+func (ccf WatchedConsulConfigFactory) Create() *ConsulConfig {
 	appID := ccf.appID
 	if appID == "" {
 		appID = readAppIDFromEnv()
