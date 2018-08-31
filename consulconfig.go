@@ -1,6 +1,8 @@
 package gindy
 
 import (
+	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -31,7 +33,7 @@ func (cc ConsulConfig) GetString(key string, defaultValue string) (string, error
 func (cc ConsulConfig) GetStringMandatory(key string) (string, error) {
 	value, isPresent := cc.kv[key]
 	if !isPresent {
-		panic("mandatory string <" + key + "> is not present")
+		return "", errors.New(fmt.Sprintf("mandatory string <%s> is not present", key))
 	}
 	return value, nil
 }
@@ -57,7 +59,7 @@ func (cc ConsulConfig) GetInt(key string, defaultValue int64) (int64, error) {
 func (cc ConsulConfig) GetIntMandatory(key string) (int64, error) {
 	value, isPresent := cc.kv[key]
 	if !isPresent {
-		panic("mandatory int <" + key + "> is not present")
+		return 0, errors.New(fmt.Sprintf("mandatory int <%s> is not present", key))
 	}
 	return strconv.ParseInt(value, 10, 64)
 }
@@ -83,7 +85,7 @@ func (cc ConsulConfig) GetBoolean(key string, defaultValue bool) (bool, error) {
 func (cc ConsulConfig) GetBooleanMandatory(key string) (bool, error) {
 	value, isPresent := cc.kv[key]
 	if !isPresent {
-		panic("mandatory bool <" + key + "> is not present")
+		return false, errors.New(fmt.Sprintf("mandatory bool <%s> is not present", key))
 	}
 	return strconv.ParseBool(value)
 }
