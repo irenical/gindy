@@ -13,13 +13,13 @@ import (
 // Usage:
 //		config := WatchedConsulConfigFactory{address: "localhost:8500"}.create()
 type WatchedConsulConfigFactory struct {
-	appID   string
-	address string
+	AppID   string
+	Address string
 }
 
 // Create creates a new instance of ConsulConfig
 func (ccf WatchedConsulConfigFactory) Create() *ConsulConfig {
-	appID := ccf.appID
+	appID := ccf.AppID
 	if appID == "" {
 		appID = readAppIDFromEnv()
 	}
@@ -29,7 +29,7 @@ func (ccf WatchedConsulConfigFactory) Create() *ConsulConfig {
 	// consul details
 	consulConfig := consul.DefaultConfig()
 	// consulConfig.Address = readConsulAddressFromEnv()
-	consulConfig.Address = ccf.address
+	consulConfig.Address = ccf.Address
 
 	// create a consul api client (for kv info)
 	client, err := consul.NewClient(consulConfig)
