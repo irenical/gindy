@@ -37,8 +37,13 @@ func (ccf WatchedConsulConfigFactory) Create() *ConsulConfig {
 		panic(err)
 	}
 
+	kvClient := client.KV()
+
+	// get initial kv map synchronously on startup
+	config.kv = getKVMap(kvClient, appID)
+
 	// execute kvpairs polling in the background to keep local map updated and notify of changes
-	go pollKVs(client.KV(), config, appID)
+	go pollKVs(kvClient, config, appID)
 
 	return config
 }
@@ -96,16 +101,22 @@ func checkForChanges(currentKV map[string]string, newKV map[string]string, callb
 	}
 }
 
+func getKVMap(kvClient *consul.KV, prefix string) map[string]string {
+	// request KV pairs from consul
+	kvPairs, err := requestKVPairs(kvClient, prefix)
+	if err != nil {
+		panic(err)
+	}
+
+	// convert KV pairs to map
+	kvMap := convertKVToMap(kvPairs, prefix)
+
+	return kvMap
+}
+
 func pollKVs(kvClient *consul.KV, config *ConsulConfig, prefix string) {
 	for {
-		// request KV pairs from consul
-		kvPairs, err := requestKVPairs(kvClient, prefix)
-		if err != nil {
-			panic(err)
-		}
-
-		// convert KV pairs to map
-		kvMap := convertKVToMap(kvPairs, prefix)
+		kvMap := getKVMap(kvClient, prefix)
 
 		// check for value changes and notify
 		checkForChanges(config.kv, kvMap, config.callback)
