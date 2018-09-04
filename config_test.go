@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetZeroString(t *testing.T) {
-	config := ConsulConfig{}
+	config := Config{}
 	v, err := config.GetString("myKey", "")
 	if err != nil {
 		t.Error(err)
@@ -16,7 +16,7 @@ func TestGetZeroString(t *testing.T) {
 }
 
 func TestGetExistingString(t *testing.T) {
-	config := ConsulConfig{}
+	config := Config{}
 	config.SetString("myKey", "myValue")
 
 	v, err := config.GetString("myKey", "")

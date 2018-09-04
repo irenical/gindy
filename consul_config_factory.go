@@ -8,23 +8,23 @@ import (
 	consul "github.com/hashicorp/consul/api"
 )
 
-// WatchedConsulConfigFactory a factory of consul config with kv auto updates
+// ConsulConfigFactory a factory of consul config with kv auto updates
 //
 // Usage:
-//		config := WatchedConsulConfigFactory{address: "localhost:8500"}.create()
-type WatchedConsulConfigFactory struct {
+//		config := ConsulConfigFactory{address: "localhost:8500"}.create()
+type ConsulConfigFactory struct {
 	AppID   string
 	Address string
 }
 
-// Create creates a new instance of ConsulConfig
-func (ccf WatchedConsulConfigFactory) Create() *ConsulConfig {
+// Create creates a new instance of Config
+func (ccf ConsulConfigFactory) Create() *Config {
 	appID := ccf.AppID
 	if appID == "" {
 		appID = readAppIDFromEnv()
 	}
 
-	config := new(ConsulConfig)
+	config := new(Config)
 
 	// consul details
 	consulConfig := consul.DefaultConfig()
@@ -114,7 +114,7 @@ func getKVMap(kvClient *consul.KV, prefix string) map[string]string {
 	return kvMap
 }
 
-func pollKVs(kvClient *consul.KV, config *ConsulConfig, prefix string) {
+func pollKVs(kvClient *consul.KV, config *Config, prefix string) {
 	for {
 		kvMap := getKVMap(kvClient, prefix)
 
